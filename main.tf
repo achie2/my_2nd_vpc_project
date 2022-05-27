@@ -2,7 +2,7 @@
 
 
 resource "aws_vpc" "Eng_Palago" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = var.cidr_block
   instance_tenancy     = "default"
   enable_dns_hostnames = true
   tags = {
@@ -16,8 +16,8 @@ resource "aws_vpc" "Eng_Palago" {
 
 resource "aws_subnet" "prod_pub_sub1" {
   vpc_id            = aws_vpc.Eng_Palago.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "eu-west-2a"
+  cidr_block        = var.public1-cidr
+  availability_zone = var.az1
 
 
 
@@ -32,8 +32,8 @@ resource "aws_subnet" "prod_pub_sub1" {
 
 resource "aws_subnet" "prod_pub_sub2" {
   vpc_id            = aws_vpc.Eng_Palago.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = "eu-west-2a"
+  cidr_block        = var.public2-cidr
+  availability_zone = var.az1
 
 
 
@@ -47,8 +47,8 @@ resource "aws_subnet" "prod_pub_sub2" {
 
 resource "aws_subnet" "prod_pub_sub3" {
   vpc_id            = aws_vpc.Eng_Palago.id
-  cidr_block        = "10.0.3.0/24"
-  availability_zone = "eu-west-2b"
+  cidr_block        = var.public3-cidr
+  availability_zone = var.az2
 
 
 
@@ -63,8 +63,8 @@ resource "aws_subnet" "prod_pub_sub3" {
 
 resource "aws_subnet" "prod_priv_sub1" {
   vpc_id            = aws_vpc.Eng_Palago.id
-  cidr_block        = "10.0.4.0/24"
-  availability_zone = "eu-west-2a"
+  cidr_block        = var.private1-cidr
+  availability_zone = var.az1
 
 
 
@@ -79,8 +79,8 @@ resource "aws_subnet" "prod_priv_sub1" {
 
 resource "aws_subnet" "prod_priv_sub2" {
   vpc_id            = aws_vpc.Eng_Palago.id
-  cidr_block        = "10.0.5.0/24"
-  availability_zone = "eu-west-2b"
+  cidr_block        = var.private2-cidr
+  availability_zone = var.az2
 
 
 
@@ -109,7 +109,7 @@ resource "aws_route_table" "prod_priv_route_table" {
   vpc_id = aws_vpc.Eng_Palago.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.Prod_Nat_gateway.id
   }
 
@@ -173,7 +173,7 @@ resource "aws_eip" "eip_for_nat_gateway" {
 
 resource "aws_nat_gateway" "Prod_Nat_gateway" {
   allocation_id = aws_eip.eip_for_nat_gateway.id
-  subnet_id     = aws_subnet.prod_pub_sub1.id 
+  subnet_id     = aws_subnet.prod_pub_sub1.id
 
   tags = {
     Name = "Prod-Nat-gateway"
